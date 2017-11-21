@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 
 import AppBar from 'material-ui/AppBar';
+import AppBarMenu from './AppBarMenu';
+import NavDrawer from './NavDrawer';
 import Form from './Form';
 import Results from './Results';
 
@@ -12,12 +14,16 @@ export default class Home extends Component {
             cuisineValue: '',
             cookTimeValue: '',
             recipes: [],
+            open: false,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleCuisineChange = this.handleCuisineChange.bind(this);
         this.handleCookTimeChange = this.handleCookTimeChange.bind(this);
+        this.handleClose = this.handleClose.bind(this);
     }
+
+    handleClose = () => this.setState({open: false});
 
 
     handleCuisineChange = (event, index, value) => this.setState({ cuisineValue: value });
@@ -27,7 +33,7 @@ export default class Home extends Component {
         e.preventDefault();
         console.log('submitted');
 
-        let url = `https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=${this.state.cuisineValue}&number=100`;
+        let url = `https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=${this.state.cuisineValue}&number=50`;
 
         axios.get(url, {
             headers: { "X-Mashape-Key": "VpQmAeJYO5msh7bVwZT13pUsanqKp1DU33NjsnvQ9KO5VtnlU9" }
@@ -47,7 +53,12 @@ export default class Home extends Component {
             <div>
                 <AppBar
                     title="Simply"
-                    iconClassNameRight="muidocs-icon-navigation-expand-more"
+                    onLeftIconButtonTouchTap={() => this.setState({open: !this.state.open})}
+                    /* iconElementLeft={<AppBarMenu />} */
+                />
+                <NavDrawer
+                    open={this.state.open}
+                    handleClose = {this.handleClose}
                 />
 
                 {
