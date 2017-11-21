@@ -60,7 +60,7 @@ export default class Home extends Component {
                         handleSubmit={this.handleSubmit}
                     />
                     :
-                    <Results />
+                    <Results recipes={this.state.recipes}/>
                 }
             </div>
         );
