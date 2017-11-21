@@ -1,83 +1,67 @@
 import React, { Component } from 'react';
+import axios from 'axios';
+
 import AppBar from 'material-ui/AppBar';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
-import FlatButton from 'material-ui/RaisedButton';
-import FontIcon from 'material-ui/FontIcon';
-
-import { Link } from 'react-router-dom';
-
-const styles = {
-    form: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    input: {
-        marginLeft: '1rem',
-        marginRight: '1rem',
-    }
-};
-
-const cuisine = [
-    <MenuItem key={'French'} value={'French'} primaryText="French" />,
-    <MenuItem key={'Vegan'} value={'Vegan'} primaryText="Vegan" />,
-    <MenuItem key={'Italian'} value={'Italian'} primaryText="Italian" />,
-    <MenuItem key={'Japanese'} value={'Japanese'} primaryText="Japanese" />,
-];
-
-const cookTime = [
-    <MenuItem key={0} value={0} primaryText="0-15 min" />,
-    <MenuItem key={15} value={15} primaryText="15-30 min" />,
-    <MenuItem key={30} value={30} primaryText="30-45 min" />,
-    <MenuItem key={45} value={45} primaryText="45-60 min" />,
-    <MenuItem key={60} value={60} primaryText="60+ min" />,
-];
+import Form from './Form';
+import Results from './Results';
 
 export default class Home extends Component {
-    state = {
-        cuisineValue: null,
-        cookTimeValue: null,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            cuisineValue: '',
+            cookTimeValue: '',
+            recipes: [],
+        };
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleCuisineChange = this.handleCuisineChange.bind(this);
+        this.handleCookTimeChange = this.handleCookTimeChange.bind(this);
+    }
+
 
     handleCuisineChange = (event, index, value) => this.setState({ cuisineValue: value });
     handleCookTimeChange = (event, index, value) => this.setState({ cookTimeValue: value });
 
+    handleSubmit(e) {
+        e.preventDefault();
+        console.log('submitted');
+
+        let url = `https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/search?cuisine=${this.state.cuisineValue}&number=100`;
+
+        axios.get(url, {
+            headers: { "X-Mashape-Key": "VpQmAeJYO5msh7bVwZT13pUsanqKp1DU33NjsnvQ9KO5VtnlU9" }
+        })
+        .then((response) => {
+            console.log('response: ',response);
+            this.setState({recipes: response.data.results});
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    };
+
     render() {
+        console.log(this.state);
         return (
             <div>
                 <AppBar
                     title="Simply"
                     iconClassNameRight="muidocs-icon-navigation-expand-more"
                 />
-                <form style={styles.form}>
-                    <SelectField
-                        style={styles.input}
-                        value={this.state.cuisineValue}
-                        onChange={this.handleCuisineChange}
-                        floatingLabelText="Cuisine Please"
-                    >
-                        {cuisine}
-                    </SelectField>
-                    <SelectField
-                        style={styles.input}
-                        value={this.state.cookTimeValue}
-                        onChange={this.handleCookTimeChange}
-                        floatingLabelText="Cooking Time Please"
-                    >
-                        {cookTime}
-                    </SelectField>
-                    <Link to="/results">
-                        <FlatButton label="Search" primary={true} />
-                    </Link>
-                    {/* <RaisedButton
-                        label="Search"
-                        labelPosition="before"
-                        primary={true}
-                        icon={<FontIcon className="material-icons">kitchen</FontIcon>}
-                        style={styles.button}
-                    /> */}
-                </form>
+
+                {
+                    this.state.recipes.length === 0
+                    ?
+                    <Form
+                        state={this.state}
+                        handleCuisineChange={this.handleCuisineChange}
+                        handleCookTimeChange={this.handleCookTimeChange}
+                        handleSubmit={this.handleSubmit}
+                    />
+                    :
+                    <Results />
+                }
             </div>
         );
     }
