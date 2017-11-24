@@ -7,6 +7,8 @@ import NavDrawer from './NavDrawer';
 import Form from './Form';
 import Results from './Results';
 
+import User from './User/User';
+
 export default class Home extends Component {
     constructor(props) {
         super(props);
@@ -61,7 +63,11 @@ export default class Home extends Component {
                     handleClose = {this.handleClose}
                 />
 
-                {
+                <User
+                    url={'http://localhost:3001/api/recipes'}
+                    /* pollInterval={2000} */
+                />
+                {/* /* {
                     this.state.recipes.length === 0
                     ?
                     <Form
@@ -72,7 +78,8 @@ export default class Home extends Component {
                     />
                     :
                     <Results recipes={this.state.recipes}/>
-                }
+                } */ 
+            }
             </div>
         );
     }
