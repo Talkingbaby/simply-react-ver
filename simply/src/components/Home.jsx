@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import AppBar from 'material-ui/AppBar';
-import AppBarMenu from './AppBarMenu';
+import AppBar from './AppBar';
 import NavDrawer from './NavDrawer';
-import Form from './Form';
-import Results from './Results';
+// import SpoonForm from './SpoonApiForm';
+// import Results from './Results';
 
 import User from './User/User';
 
@@ -54,7 +53,6 @@ export default class Home extends Component {
         return (
             <div>
                 <AppBar
-                    title="Simply"
                     onLeftIconButtonTouchTap={() => this.setState({open: !this.state.open})}
                     /* iconElementLeft={<AppBarMenu />} */
                 />
@@ -70,7 +68,7 @@ export default class Home extends Component {
                 {/* /* {
                     this.state.recipes.length === 0
                     ?
-                    <Form
+                    <SpoonForm
                         state={this.state}
                         handleCuisineChange={this.handleCuisineChange}
                         handleCookTimeChange={this.handleCookTimeChange}
